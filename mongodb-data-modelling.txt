@@ -1,0 +1,45 @@
+*alguns casos são baseados em um app de filmes...
+
+1. TYPES OF RELATIONSHIPS BETWEEN DATA
+> 1:1 -> um campo só pode ter um (1) valor;
+> 1:many -> dividido em 3 tipos:
+  ~ 1:few -> 1 doc pode estar relacionado com alguns outros docs
+  ~ 1:many -> 1 doc pode estar relacionado com centenas/milhares de outros docs
+  ~ 1:ton -> 1 doc pode estar relacionado com milhões de outros docs
+  > many:many -> "um filme pode ter vários atores e também um ator pode atuar em vários filmes..."
+
+  2. REFERENCING VS EMBEDDING
+  > Referenced / Normalized: tanto os conjuntos de dados relacionados, quanto os docs são mantidos separados (ex: num banco de dados p/
+  filmes, teria 1 doc p/ filme e 1 doc p/ ator, p/ cada ator -> sendo os atores referenciados no doc do filme pelo ID)
+    ~ Ponto positivo (+): é mais fácil de obter cada documento separadamente, facilitando obter apenas os dados que precisamos
+    ~ Ponto negativo (-): é necessário fazer mais de uma query p/ obter os dados (ex: uma query p/ o filme e outra p/ o ator)
+  > Embedded / Denormalized: há a integração dos docs relacionados no doc principal -> terá 1 doc principal contendo toda os dados
+   principais e os dados relacionados, não precisando de docs separados, coleções e IDs. 
+   ~ Ponto positivo (+): é possível obter todas os dados ao mesmo tempo (em uma query), aumentando a performance
+   ~ Ponto negativo (-): é impossível consultar o doc incorporado separadamente; no caso de uma requisição p/ a aplicação,
+   teria que ser escolhido o design normalized 
+
+   * começar o processo pensando na forma Denormalized e na conclusão, na forma Normalized (?)
+
+3. WHEN TO EMBED AND WHEN TO REFERENCE?
+~ levar em consideração: 
+-> tipo de relacionamento: como os dois conjuntos de dados estão relacionados 
+  *embedding: 1:few, 1:many
+  *referencing: 1:many, 1:ton, many:many
+-> padrão de data access: com qual frequência o dado é lido e escrito. read/write ratio
+  *embedding: dados são mais lidos, dados não mudam rapidamente, high read/write ratio (mais reading do que writing)
+  *referencing: dados são atualizados com frequência, low read/write ratio
+-> "data closeness": quanto os dados estão relacionados; como queremos obter os dados do banco de dados
+  *embedding: dados realmente pertencem um ao outro (ex: vários emails referentes a um user)
+  *referencing: frequentemente é preciso obter ambos os conjuntos de dados separadamente
+
+4. TYPES OF REFERENCING
+-> Child referencing: são mantidas referências do related child no parent document, que são mantidas geralmente num array -> no caso de ter
+muitos child, pode ficar confuso no parent document -> para 1:few
+-> Parent referencing: são mantidas referências do parent em cada child document -> para 1:many, 1:ton
+-> Two-way referencing: "cada filme possui muitos atores e cada ator participa de muitos filmes" -> para many:many
+  ~ ex: em cada filme serão mantidas referências de todos os atores que atuam no filme (tipo no child referencing), ao mesmo tempo, também
+  são mantidas referências de todos os filmes que o ator participa (filmes e atores são conectados em ambas as direções) -> facilitando a
+ pesquisa quanto ao ator relacionado a cada filme e os filmes associados ao ator
+
+
